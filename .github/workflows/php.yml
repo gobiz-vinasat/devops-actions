@@ -2,6 +2,9 @@ name: PHP CI
 on:
   workflow_call:
     inputs:
+      registry:
+        required: true
+        type: string
       repository:
         required: true
         type: string
@@ -12,14 +15,8 @@ on:
         required: false
         type: string
         default: gobizdotvn/php-fpm:7.4.1
-      aws-ecr-region:
-        required: false
-        type: string
-        default: ap-southeast-1
     secrets:
-      aws-ecr-access-key-id:
-        required: true
-      aws-ecr-secret-access-key:
+      gar-json-key:
         required: true
 jobs:
   build:
@@ -59,17 +56,15 @@ jobs:
           else
             echo "::set-output name=tags::${{ inputs.repository }}:dev-${{ inputs.branch }}"
           fi
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Login to GAR
+        uses: docker/login-action@v1
         with:
-          aws-access-key-id: ${{ secrets.aws-ecr-access-key-id }}
-          aws-secret-access-key: ${{ secrets.aws-ecr-secret-access-key }}
-          aws-region: ${{ inputs.aws-ecr-region }}
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+          registry: ${{ inputs.registry }}
+          username: _json_key
+          password: ${{ secrets.gar-json-key }}
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
+          context: .
           push: true
           tags: ${{ steps.make-tags.outputs.tags }}
