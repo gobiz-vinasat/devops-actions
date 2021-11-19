@@ -1,0 +1,25 @@
+name: Deploy image
+description: Deploy image to K8S Deployment
+inputs:
+  namespace:
+    description: Namespace
+    required: true
+  deployment:
+    description: Deployment name
+    required: true
+  image:
+    description: Image that will be deployed
+    required: true
+  payload_file:
+    description: Payload template file path
+    required: true
+runs:
+  using: composite
+  steps:
+    - run: |
+        image="${{ inputs.image }}"
+        payload=$(cat "${{ inputs.payload_file }}")
+        payload=$(echo $payload | sed "s|:image|${image}|g")
+        payload=$(echo $payload | sed "s|:runId|${{ github.run_id }}|g")
+        kubectl patch deployment/${{ inputs.deployment }} -n ${{ inputs.namespace }} -p "$payload"
+      shell: bash
