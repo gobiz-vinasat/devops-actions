@@ -28,6 +28,8 @@ jobs:
         with:
           ref: ${{ inputs.branch }}
       - name: Build application
+        env:
+          REACT_APP_VERSION: ${{ github.run_id }}
         run: |
           unset CI
           npm ci
