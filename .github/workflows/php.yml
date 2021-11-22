@@ -11,17 +11,21 @@ on:
       branch:
         required: true
         type: string
-      php-container:
+      php-image:
         required: false
         type: string
         default: gobizdotvn/php-fpm:7.4.1
+      composer-phar:
+        required: false
+        type: string
+        default: composer
     secrets:
       gar-json-key:
         required: true
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: ${{ inputs.php-container }}
+    container: ${{ inputs.php-image }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -29,7 +33,7 @@ jobs:
           ref: ${{ inputs.branch }}
       - name: Install composer dependencies
         run: |
-          composer install --no-scripts
+          ${{ inputs.composer-phar }} install --no-scripts
           tar -czf /tmp/app.tar .
       - name: Archive application artifact
         uses: actions/upload-artifact@v2
