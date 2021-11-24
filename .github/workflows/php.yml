@@ -20,7 +20,9 @@ on:
         type: string
         default: composer
     secrets:
-      gar-json-key:
+      docker-username:
+        required: true
+      docker-password:
         required: true
 jobs:
   build:
@@ -52,21 +54,17 @@ jobs:
         run: tar -xzf app.tar && rm app.tar
       - name: Make image tags
         id: make-tags
-        run: |
-          if [ ${{ startsWith(inputs.branch, 'v') }} == true ]
-          then
-            tag=`echo "${{ inputs.branch }}" | sed "s/^v/""/"`
-            echo "::set-output name=tags::${{ inputs.repository }}:$tag,${{ inputs.repository }}:latest"
-          else
-            echo "::set-output name=tags::${{ inputs.repository }}:dev-${{ inputs.branch }}"
-          fi
-      - name: Login to GAR
+        uses: gobiz-vinasat/devops-actions/actions/make-image-tags@master
+        with:
+          repository: ${{ inputs.repository }}
+          branch: ${{ inputs.branch }}
+      - name: Docker login
         uses: docker/login-action@v1
         with:
           registry: ${{ inputs.registry }}
-          username: _json_key
-          password: ${{ secrets.gar-json-key }}
-      - name: Build and push Docker image
+          username: ${{ secrets.docker-username }}
+          password: ${{ secrets.docker-password }}
+      - name: Build and push image
         uses: docker/build-push-action@v2
         with:
           context: .
