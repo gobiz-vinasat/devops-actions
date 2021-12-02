@@ -11,24 +11,27 @@ on:
       branch:
         required: true
         type: string
-      node-container:
+      node-version:
         required: false
         type: string
-        default: node:14-alpine
+        default: 14
     secrets:
       docker-username:
         required: true
       docker-password:
         required: true
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
-    container: ${{ inputs.node-container }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
         with:
           ref: ${{ inputs.branch }}
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ inputs.node-version }}
       - name: Build application
         env:
           REACT_APP_VERSION: ${{ github.run_id }}
@@ -36,22 +39,6 @@ jobs:
           unset CI
           npm ci
           npm run build
-          tar -czf /tmp/app.tar --exclude=node_modules .
-      - name: Archive application artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: app
-          path: /tmp/app.tar
-  publish:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Download application artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: app
-      - name: Extract application artifact
-        run: tar -xzf app.tar && rm app.tar
       - name: Make image tags
         id: make-tags
         uses: gobiz-vinasat/devops-actions/actions/make-image-tags@master
