@@ -14,7 +14,7 @@ on:
       php-image:
         required: false
         type: string
-        default: gobizdotvn/php-fpm:7.4.1
+        default: ghcr.io/gobiz-vinasat/image-php-fpm:7.4.1
       composer-phar:
         required: false
         type: string
