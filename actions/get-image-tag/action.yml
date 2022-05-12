@@ -1,0 +1,26 @@
+name: Get image tag
+description: Get image tag
+inputs:
+  branch:
+    description: Branch
+    required: true
+outputs:
+  tag:
+    description: Image tag
+    value: ${{ steps.get_tag.outputs.tag }}
+runs:
+  using: composite
+  steps:
+    - id: get_tag
+      run: |
+        if [ "${{ inputs.branch }}" == "latest" ]
+        then
+          echo "::set-output name=tag::latest"
+        elif [ ${{ startsWith(inputs.branch, 'v') }} == true ]
+        then
+          tag=`echo "${{ inputs.branch }}" | sed "s/^v/""/"`
+          echo "::set-output name=tag::$tag"
+        else
+          echo "::set-output name=tag::dev-${{ inputs.branch }}"
+        fi
+      shell: bash
