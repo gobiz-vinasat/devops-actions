@@ -7,11 +7,11 @@ inputs:
 outputs:
   tag:
     description: Image tag
-    value: ${{ steps.get_tag.outputs.tag }}
+    value: ${{ steps.get-tag.outputs.tag }}
 runs:
   using: composite
   steps:
-    - id: get_tag
+    - id: get-tag
       run: |
         if [ "${{ inputs.branch }}" == "latest" ]
         then
