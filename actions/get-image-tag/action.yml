@@ -17,16 +17,18 @@ runs:
   steps:
     - id: get-tag
       run: |
+        tag=""
+
         if [ "${{ inputs.branch }}" == "latest" ]
         then
-          echo "::set-output name=tag::latest"
+          tag="latest"
         elif [ ${{ startsWith(inputs.branch, 'v') }} == true ]
         then
           tag=`echo "${{ inputs.branch }}" | sed "s/^v/""/"`
-          echo "::set-output name=tag::$tag"
         else
           branch="${{ inputs.branch }}"
           tag=$(echo "${{ inputs.dev-tag-format }}" | sed "s|:branch|${branch}|g")
-          echo "::set-output name=tag::$tag"
         fi
+
+        echo "::set-output name=tag::$tag"
       shell: bash
