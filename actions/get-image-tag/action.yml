@@ -4,6 +4,10 @@ inputs:
   branch:
     description: Branch
     required: true
+  dev-tag-format:
+    description: Format for dev tag
+    required: false
+    default: dev-:branch
 outputs:
   tag:
     description: Image tag
@@ -21,6 +25,8 @@ runs:
           tag=`echo "${{ inputs.branch }}" | sed "s/^v/""/"`
           echo "::set-output name=tag::$tag"
         else
-          echo "::set-output name=tag::dev-${{ inputs.branch }}"
+          branch="${{ inputs.branch }}"
+          tag=$(echo "${{ inputs.dev-tag-format }}" | sed "s|:branch|${branch}|g")
+          echo "::set-output name=tag::$tag"
         fi
       shell: bash
