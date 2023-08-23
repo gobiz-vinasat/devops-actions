@@ -19,16 +19,14 @@ runs:
       run: |
         tag=""
 
-        if [ "${{ inputs.branch }}" == "latest" ]
-        then
+        if [ "${{ inputs.branch }}" == "latest" ]; then
           tag="latest"
-        elif [ ${{ startsWith(inputs.branch, 'v') }} == true ]
-        then
+        elif [ ${{ startsWith(inputs.branch, 'v') }} == true ]; then
           tag=`echo "${{ inputs.branch }}" | sed "s/^v/""/"`
         else
           branch="${{ inputs.branch }}"
           tag=$(echo "${{ inputs.dev-tag-format }}" | sed "s|:branch|${branch}|g")
         fi
 
-        echo "::set-output name=tag::$tag"
+        echo "tag=$tag" >> "$GITHUB_OUTPUT"
       shell: bash
