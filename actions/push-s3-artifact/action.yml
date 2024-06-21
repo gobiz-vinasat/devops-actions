@@ -1,14 +1,14 @@
 name: Push artifact to S3
 description: Push artifact to S3
 inputs:
+  s3-bucket:
+    description: S3 bucket name
+    required: true
   project:
     description: Project name
     required: true
   branch:
     description: Branch name
-    required: true
-  s3-bucket:
-    description: S3 bucket name
     required: true
   build-latest-tag:
     description: Need to build latest tag ot not
