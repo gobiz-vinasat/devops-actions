@@ -14,10 +14,6 @@ inputs:
     description: Need to build latest tag ot not
     required: false
     default: "true"
-outputs:
-  artifact:
-    description: S3 path of artifact
-    value: ${{ steps.get-artifact.outputs.artifact }}
 runs:
   using: composite
   steps:
