@@ -1,7 +1,7 @@
 name: Push artifact to S3
 description: Push artifact to S3
 inputs:
-  s3-bucket:
+  bucket:
     description: S3 bucket name
     required: true
   project:
@@ -28,7 +28,7 @@ runs:
           buildLatestTag=false
         fi
 
-        s3Url="s3://${{ inputs.s3-bucket }}/$prefix/${{ inputs.project }}"
+        s3Url="s3://${{ inputs.bucket }}/$prefix/${{ inputs.project }}"
         outputFile="/tmp/$tag.tgz"
 
         tar --exclude=.git -czf $outputFile ./
