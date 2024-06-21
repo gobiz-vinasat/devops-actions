@@ -1,0 +1,54 @@
+name: Build frontend & push artifacts to S3
+on:
+  workflow_call:
+    inputs:
+      project:
+        required: true
+        type: string
+      branch:
+        required: true
+        type: string
+      s3-bucket:
+        required: true
+        type: string
+      aws-role:
+        required: true
+        type: string
+      aws-region:
+        required: false
+        type: string
+        default: ap-southeast-1
+      build-latest-tag:
+        required: false
+        type: boolean
+        default: true
+      node-version:
+        required: false
+        type: string
+        default: 20
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.branch }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ inputs.node-version }}
+      - run: |
+          unset CI
+          npm ci
+          npm run build
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ inputs.aws-role }}
+          aws-region: ${{ inputs.aws-region }}
+      - uses: gobiz-vinasat/devops-actions/actions/push-s3-artifact@dev
+        with:
+          bucket: ${{ inputs.s3-bucket }}
+          project: ${{ inputs.project }}
+          branch: ${{ inputs.branch }}
