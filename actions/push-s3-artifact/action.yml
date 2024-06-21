@@ -10,6 +10,9 @@ inputs:
   branch:
     description: Branch name
     required: true
+  path:
+    description: The file or directory need to upload
+    required: true
   build-latest-tag:
     description: Need to build latest tag ot not
     required: false
@@ -31,7 +34,7 @@ runs:
         s3Url="s3://${{ inputs.bucket }}/$prefix/${{ inputs.project }}"
         outputFile="/tmp/$tag.tgz"
 
-        tar --exclude=.git -czf $outputFile ./
+        tar --exclude=.git -czf $outputFile ${{ inputs.path }}
 
         aws s3 cp $outputFile $s3Url/$tag.tgz
 
