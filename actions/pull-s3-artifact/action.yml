@@ -23,7 +23,6 @@ runs:
         bucket: ${{ inputs.bucket }}
         project: ${{ inputs.project }}
         branch: ${{ inputs.branch }}
-      shell: bash
     - run: |
         target="${{ inputs.target }}"
         tgz="${{ inputs.target }}.tgz"
