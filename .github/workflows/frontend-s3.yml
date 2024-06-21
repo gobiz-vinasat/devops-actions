@@ -18,6 +18,10 @@ on:
         required: false
         type: string
         default: ap-southeast-1
+      output:
+        required: false
+        type: string
+        default: build
       build-latest-tag:
         required: false
         type: boolean
@@ -52,3 +56,4 @@ jobs:
           bucket: ${{ inputs.s3-bucket }}
           project: ${{ inputs.project }}
           branch: ${{ inputs.branch }}
+          path: ${{ inputs.output }}
