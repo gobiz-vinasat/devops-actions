@@ -26,7 +26,7 @@ jobs:
           ref: ${{ inputs.branch }}
       - name: Make image tags
         id: make-tags
-        uses: gobiz-vinasat/devops-actions/actions/make-image-tags@dev
+        uses: gobiz-vinasat/devops-actions/actions/make-image-tags@master
         with:
           repository: ${{ inputs.repository }}
           branch: ${{ inputs.branch }}
