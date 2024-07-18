@@ -1,4 +1,4 @@
-name: Build frontend & push artifacts to S3
+name: Push artifacts to S3
 on:
   workflow_call:
     inputs:
@@ -18,25 +18,10 @@ on:
         required: false
         type: string
         default: ap-southeast-1
-      output:
-        required: false
-        type: string
-        default: build
-      command:
-        required: false
-        type: string
-        default: |
-          unset CI
-          npm ci
-          npm run build
       build-latest-tag:
         required: false
         type: boolean
         default: true
-      node-version:
-        required: false
-        type: string
-        default: 20
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -47,10 +32,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch }}
-      - uses: actions/setup-node@v2
-        with:
-          node-version: ${{ inputs.node-version }}
-      - run: (${{ inputs.command }})
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ inputs.aws-role }}
@@ -60,5 +41,5 @@ jobs:
           bucket: ${{ inputs.s3-bucket }}
           project: ${{ inputs.project }}
           branch: ${{ inputs.branch }}
-          path: ${{ inputs.output }}
+          path: ./
           build-latest-tag: ${{ inputs.build-latest-tag }}
