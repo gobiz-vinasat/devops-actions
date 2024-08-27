@@ -21,6 +21,11 @@ on:
         description: Format for dev tag
         required: false
         default: dev-:branch
+      context:
+        type: string
+        description: Build's context
+        required: false
+        default: .
     secrets:
       docker-username:
         required: true
@@ -51,6 +56,6 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ${{ inputs.context }}
           push: true
           tags: ${{ steps.make-tags.outputs.tags }}
