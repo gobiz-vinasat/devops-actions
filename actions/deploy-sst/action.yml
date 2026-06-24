@@ -32,5 +32,8 @@ runs:
     - run: cd .app && npm install
       shell: bash
 
+    - run: cd .app && rm -rf .sst cdk.out
+      shell: bash
+
     - run: cd .app && npx sst deploy --stage ${{ inputs.stage }}
       shell: bash
